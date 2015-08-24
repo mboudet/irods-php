@@ -983,7 +983,7 @@ class RODSConn {
     public function fileRead($l1desc, $length) {
        
         $openedDataObjInp = new RP_OpenedDataObjInp($l1desc, $length);
-        $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['OPENED_DATA_OBJ_READ_AN'], $string);
+        $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['OPENED_DATA_OBJ_READ_AN']);
 
         fwrite($this->conn, $msg->pack()); // send it
         $msg = new RODSMessage();
@@ -1035,7 +1035,7 @@ class RODSConn {
         
         
         $openedDataObjInp = new RP_OpenedDataObjInp($l1desc, 0, $offset, $whence);
-        $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['OPENED_DATA_OBJ_SEEK_AN'], $string);
+        $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['OPENED_DATA_OBJ_SEEK_AN']);
 
         fwrite($this->conn, $msg->pack()); // send it
         $msg = new RODSMessage();
