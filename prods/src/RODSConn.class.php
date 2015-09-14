@@ -1223,6 +1223,10 @@ class RODSConn {
                 $label = $param->label;
                 $ret_arr["$label"] = $param->STR_PI->myStr;
             } else
+            if ($param->type == 'INT_PI') {
+                $label = $param->label;
+                $ret_arr["$label"] = $param->INT_PI->myStr;
+            } else
             if ($param->type == 'KeyValPair_PI') {
                 $label = $param->label;
                 $ret_arr["$label"] = RODSKeyValPair::fromPacket($param->KeyValPair_PI);
