@@ -1,0 +1,9 @@
+{
+    "name": "maastrichtuniversity/irods-php",
+    "description": "The canonical iRODS PHP API ",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit":"4.2.*",
+        "phpunit/phpunit-skeleton-generator":"2.0.1"
+    }
+}
