@@ -1,5 +1,4 @@
 <?php
-require_once("autoload.inc.php");
 class RODSGenQueResults
 {
     private $total_count;

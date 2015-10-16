@@ -1,7 +1,6 @@
 <?php
 
-require_once("src/RODSConn.class.php");
-require_once("src/RODSConnManager.class.php");
+require('vendor/autoload.php');
 
 $account = new RODSAccount("localhost", 1247, "rods", "RODS", "tempZone");
 $home_dir_str = '/tempZone/home/rods';

@@ -7,8 +7,6 @@
  * @package Prods
  */
 
-require_once("autoload.inc.php");
-
 class ProdsStreamer
 {
  /**

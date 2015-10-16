@@ -1,5 +1,5 @@
 <?php
-require_once("/Path/to/Prods/src/Prods.inc.php");
+require_once("vendor/autoload.php");
 
 // make an iRODS account object for connection, assuming:
 // username: demouser, password: demopass, server: srbbrick15.sdsc.edu, port: 1247

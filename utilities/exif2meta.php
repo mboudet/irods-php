@@ -18,7 +18,7 @@ $pass = 'RODS';
 
 //----------don't modify below this line!! -----------
 
-require_once("../src/Prods.inc.php");
+require_once("../vendor/autoload.php");
 
 $target_file = $argv[1];
 

@@ -1,6 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../autoload.inc.php");
 require_once(dirname(__FILE__) . "/../RodsGenQueryNum.inc.php");
 
 class RP_InxValPair extends RODSPacket

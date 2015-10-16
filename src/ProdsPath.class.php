@@ -6,10 +6,6 @@
  * @package Prods
  */
 
-require_once("autoload.inc.php");
-
-require_once(CLASS_DIR . "/ProdsConfig.inc.php");
-
 /**
  * ProdsPath class. This class is a abastract class for objects that can be represented as a path, such as file or directory
  * @package Prods

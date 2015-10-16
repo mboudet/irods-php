@@ -1,5 +1,4 @@
 <?php
-require_once("autoload.inc.php");
 class RODSGenQueSelFlds
 {
     private $names;

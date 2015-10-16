@@ -5,8 +5,6 @@
  * Time: 16:45
  */
 
-require_once(dirname(__FILE__) . "/../autoload.inc.php");
-
 class RP_ticketAdminInp extends RODSPacket
 {
     public function __construct($arg1 = 'session', // session -> to use it, create -> to... create!,

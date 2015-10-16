@@ -8,8 +8,6 @@
 define("MAX_PASSWORD_LEN", 50);
 /**#@-*/
 
-require_once("autoload.inc.php");
-
 class RODSAccount
 {
  /**#@+

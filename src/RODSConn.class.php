@@ -6,7 +6,6 @@
  * @copyright Copyright &copy; 2007, TBD
  * @package RODSConn
  */
-require_once("autoload.inc.php");
 require_once("RodsAPINum.inc.php");
 require_once("RodsConst.inc.php");
 

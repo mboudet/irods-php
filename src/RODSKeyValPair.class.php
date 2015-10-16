@@ -6,9 +6,6 @@
  * @package RODSConn
  */
 
-
-require_once("autoload.inc.php");
-
 class RODSKeyValPair
 {
     private $keys;

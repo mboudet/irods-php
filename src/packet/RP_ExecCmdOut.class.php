@@ -9,7 +9,6 @@
  *
  * @author lisa
  */
-require_once(dirname(__FILE__) . "/../autoload.inc.php");
 
 class RP_ExecCmdOut extends RODSPacket
 {

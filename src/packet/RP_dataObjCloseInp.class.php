@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../autoload.inc.php");
-
 class RP_dataObjCloseInp extends RODSPacket
 {
     public function __construct($l1descInx = -1, $bytesWritten = 0)

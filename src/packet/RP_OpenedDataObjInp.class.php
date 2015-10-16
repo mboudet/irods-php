@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../autoload.inc.php");
-
 class RP_OpenedDataObjInp extends RODSPacket {
 
     private $KeyValPair_PI;

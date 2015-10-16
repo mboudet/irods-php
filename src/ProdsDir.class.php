@@ -6,8 +6,6 @@
  * @package Prods
  */
 
-require_once("autoload.inc.php");
-
 class ProdsDir extends ProdsPath
 {
     /**

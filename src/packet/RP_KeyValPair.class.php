@@ -1,6 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../autoload.inc.php");
 class RP_KeyValPair extends RODSPacket
 {
     public function __construct($ssLen = 0, array $keyWord = array(), array $svalue = array())

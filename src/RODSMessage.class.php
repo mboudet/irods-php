@@ -1,7 +1,5 @@
 <?php
 
-require_once("autoload.inc.php");
-
 $GLOBALS['RODSMessage_types'] = array(
     "RODS_CONNECT_T" => "RODS_CONNECT",
     "RODS_VERSION_T" => "RODS_VERSION",

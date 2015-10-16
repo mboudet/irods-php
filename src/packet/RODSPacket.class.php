@@ -1,7 +1,5 @@
 <?php
 
-//require_once(dirname(__FILE__)."/../autoload.inc.php");
-
 /*
 $GLOBALS['Pack_PI_Table']=array (
   "MsgHeader_PI" => array ("type" => NULL, "msgLen" => 0, 

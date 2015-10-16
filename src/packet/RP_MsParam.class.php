@@ -1,6 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../autoload.inc.php");
 class RP_MsParam extends RODSPacket
 {
     public function __construct($label = '', RODSPacket $inOutStruct = null,

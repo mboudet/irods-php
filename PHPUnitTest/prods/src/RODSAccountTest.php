@@ -3,7 +3,6 @@
 require_once dirname(__FILE__) . '/../../../prods/src/RODSAccount.class.php';
 require_once dirname(__FILE__) . '/../../../prods/src/RODSConn.class.php';
 require_once dirname(__FILE__) . '/../../../prods/src/RODSConnManager.class.php';
-// require_once dirname(__FILE__) . '/../../../prods/src/ProdsConfig.inc.php';
 require_once dirname(__FILE__) . '/../../../prods/src/ProdsPath.class.php';
 require_once dirname(__FILE__) . '/../../../prods/src/ProdsDir.class.php';
 require_once dirname(__FILE__) . '/../../../prods/src/RODSException.class.php';

@@ -6,7 +6,6 @@
  * @copyright Copyright &copy; 2007, TBD
  * @package Prods
  */
-require_once("autoload.inc.php");
 
 class ProdsRule
 {

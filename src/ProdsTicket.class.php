@@ -5,8 +5,6 @@
  * Time: 14:15
  */
 
-require_once("autoload.inc.php");
-
 class ProdsTicket
 {
     private $account;

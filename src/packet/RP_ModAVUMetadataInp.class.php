@@ -1,6 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../autoload.inc.php");
 class RP_ModAVUMetadataInp extends RODSPacket
 {
     public function __construct($arg0 = NULL, $arg1 = NULL, $arg2 = NULL,

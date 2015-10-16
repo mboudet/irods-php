@@ -1,6 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../autoload.inc.php");
 class RP_MsParamArray extends RODSPacket
 {
     // if one of the packlet is an array of packets, define it here.

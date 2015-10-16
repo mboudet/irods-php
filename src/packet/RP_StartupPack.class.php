@@ -1,6 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../autoload.inc.php");
 class RP_StartupPack extends RODSPacket
 {
     public function __construct($user = "",$proxy_user = "", $zone = "", $relVersion = RODS_REL_VERSION,
