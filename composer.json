@@ -2,7 +2,9 @@
     "name": "maastrichtuniversity/irods-php",
     "description": "The canonical iRODS PHP API ",
     "type": "library",
+    "license": "BSD",
     "require-dev": {
+        "php": ">=5.3.0",
         "phpunit/phpunit":"4.2.*",
         "phpunit/phpunit-skeleton-generator":"2.0.1"
     },

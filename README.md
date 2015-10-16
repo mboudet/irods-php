@@ -1,23 +1,14 @@
 #irods-php
-=========
 
-## PHP API for iRODS
+This is a fork of the official DICE-UNC iRODS PHP api.
 
-#### Version: 4.0.3-SNAPSHOT
-#### Release: TBD
-#### Git Tag: TBD
+## Installation
 
-##### This is the canonical iRODS PHP API and deprecates the PHP API that was hosted on code.renci.org
+Through composer.
 
-PHP Core API and PRODS Web Browser for iRODS.
+## Features and bug fixes compared to DICE-UNC version
 
-## Features and Bug Fixes
+* Support composer autoloading
+* Support proxy user (aka switch user)
+* INT_RP reply support
 
-#### mkdir fails on iRODS 4.0 #6
-
-Updated to use the new CollInpNew_PI API number 681
-
-
-#### ProdsFile->write fails on iRODS 4.0 #9
-
-Updated packing instructions for File read(), seek(), open(), close(), write() to use OpenedDataObjInp, replacing deprecated API
