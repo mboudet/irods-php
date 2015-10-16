@@ -1,13 +1,34 @@
-*'''Project''': iRODS PHP Library PRODS and PRODS Web Browser
+
+*'''Project''': PHP Prods API for iRODS 
 *'''Date''': 08/14/2013
 *'''Release Version''': 3.3.0
 *'''git tag''':  3.3.0
 
 ==News==
 
-The PRODS PHP Web Browser is also included in this project, and remains supported.  Note that the PHP Web Browser functionality has been subsumed by the idrop-web browser and idrop-swing client. 
+PHP API for iRODS
 
-Please go to [[https://code.renci.org/gf/project/irodsphp/] for the latest news and info.
+This release is a merge of community supported additions for PAM and tickets
 
-Note that the git repository is now the canonical version of the PHP code.  The code in the iRODS SVN server is deprecated and will be taken down at the 3.0.0 release point.  There may be other versions in Google Code and other places, but these should be considered obsolete.
 
+GForge for PHP is at:  [[https://code.renci.org/gf/project/irodsphp/]]
+
+==Requirements==
+
+Note that the following bug and feature requests are logged in GForge with related commit information [[https://code.renci.org/gf/project/irodsphp/tracker/]]
+
+==Features==
+
+*[#1280] Add PAM support to PHP
+
+*[#1122] Add Ticket support to PHP
+
+==Bug Fixes==
+
+
+
+==Outstanding Issues==
+
+Please consult [[https://code.renci.org/gf/project/irodsphp/tracker/]]
+
+for the latest open bugs and Jargon feature requests
