@@ -846,12 +846,13 @@ class RODSConn {
      *   'a+'    Open for reading and writing; place the file pointer at the end of the file. If the file does not exist, attempt to create it.
      *   'x'    Create and open for writing only; place the file pointer at the beginning of the file. If the file already exists, the fopen() call will fail by returning FALSE and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
      *   'x+'    Create and open for reading and writing; place the file pointer at the beginning of the file. If the file already exists, the fopen() call will fail by returning FALSE and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
-     * @param postion updated position
-     * @param string $rescname. Note that this parameter is required only if the file does not exists (create mode). If the file already exists, and if file resource is unknown or unique or you-dont-care for that file, leave the field, or pass NULL.
-     * @param boolean $assum_file_exists. This parameter specifies whether file exists. If the value is false, this mothod will check with RODS server to make sure. If value is true, the check will NOT be done. Default value is false.
-     * @param string $filetype. This parameter only make sense when you want to specify the file type, if file does not exists (create mode). If not specified, it defaults to "generic"
-     * @param integer $cmode. This parameter is only used for "createmode". It specifies the file mode on physical storage system (RODS vault), in octal 4 digit format. For instance, 0644 is owner readable/writeable, and nothing else. 0777 is all readable, writable, and excutable. If not specified, and the open flag requirs create mode, it defaults to 0644.
-     * @return integer level 1 descriptor
+     * @param int $position updated position
+     * @param string $rescname . Note that this parameter is required only if the file does not exists (create mode). If the file already exists, and if file resource is unknown or unique or you-dont-care for that file, leave the field, or pass NULL.
+     * @param boolean $assum_file_exists . This parameter specifies whether file exists. If the value is false, this mothod will check with RODS server to make sure. If value is true, the check will NOT be done. Default value is false.
+     * @param string $filetype . This parameter only make sense when you want to specify the file type, if file does not exists (create mode). If not specified, it defaults to "generic"
+     * @param integer $cmode . This parameter is only used for "createmode". It specifies the file mode on physical storage system (RODS vault), in octal 4 digit format. For instance, 0644 is owner readable/writeable, and nothing else. 0777 is all readable, writable, and excutable. If not specified, and the open flag requirs create mode, it defaults to 0644.
+     * @return int level 1 descriptor
+     * @throws RODSException
      */
     public function openFileDesc($path, $mode, &$position, $rescname = NULL, $assum_file_exists = false, $filetype = 'generic', $cmode = 0644) {
         $create_if_not_exists = false;
@@ -898,15 +899,15 @@ class RODSConn {
                 throw new RODSException("RODSConn::openFileDesc() does not recognize input mode:'$mode' ", "PERR_USER_INPUT_ERROR");
         }
 
-        if ($assum_file_exists === true)
+        if ($assum_file_exists == true) {
             $file_exists = true;
-        else
+        } else {
             $file_exists = $this->fileExists($path, $rescname);
+        }
 
         if (($error_if_exists) && ($file_exists === true)) {
             throw new RODSException("RODSConn::openFileDesc() expect file '$path' dose not exists with mode '$mode', but the file does exists", "PERR_USER_INPUT_ERROR");
         }
-
 
         if (($create_if_not_exists) && ($file_exists === false)) { // create new file
             $keyValPair_pk = new RP_KeyValPair(2, array("rescName", "dataType"), array("$rescname", "$filetype"));

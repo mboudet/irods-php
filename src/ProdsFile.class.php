@@ -1,24 +1,31 @@
 <?php
+
 /**
  * PRODS file class
  * @author Sifang Lu <sifang@sdsc.edu>
  * @copyright Copyright &copy; 2007, TBD
  * @package Prods
  */
-
 class ProdsFile extends ProdsPath
 {
     public $stats;
 
-    private $rodsconn; //real RODS connection
     private $l1desc; //lvl 1 descriptor on RODS server
-    private $conn; //the connection to RODS agent l1desc lives on.
+    /**
+     * @var RODSConn the connection to RODS agent l1desc lives on.
+     */
+    private $conn;
     private $rescname; //resource name.
     private $openmode; //open mode used if file is opened
     private $position; //current position of the file, if opened.
 
     /**
      * The class constructor
+     * @param RODSAccount $account
+     * @param string $path_str
+     * @param bool $verify
+     * @param RODSFileStats $stats
+     * @throws RODSException
      */
     public function __construct(RODSAccount &$account, $path_str,
                                 $verify = false, RODSFileStats $stats = NULL)
@@ -39,86 +46,84 @@ class ProdsFile extends ProdsPath
             }
         }
     }
-  
-  
- /**
-	* Create a new ProdsFile object from URI string.
-	* @param string $path the URI Sting
-	* @param boolean $verify whether verify if the path exsits
-	* @return a new ProdsDir
-	*/
-  public static function fromURI($path, $verify=false)
-  {
-    if (0!=strncmp($path,"rods://",7))
-      $path="rods://".$path;
-    $url=parse_url($path);
-    
-    $host=isset($url['host'])?$url['host']:''; 
-    $port=isset($url['port'])?$url['port']:'';   
-    
-    $user='';
-    $zone='';
-    $authtype='irods';
-    if (isset($url['user']))
+
+
+    /**
+     * Create a new ProdsFile object from URI string.
+     *
+     * @param string $path the URI Sting
+     * @param boolean $verify whether verify if the path exsits
+     * @return ProdsFile a new ProdsFile
+     */
+    public static function fromURI($path, $verify = false)
     {
-      if (strstr($url['user'],".")!==false) {
-        $user_array=@explode(".",$url['user']);
-        if (count($user_array)===3) {
-          $user=$user_array[0];
-          $zone=$user_array[1];
-          $authtype=$user_array[2];
+        if (0 != strncmp($path, "rods://", 7))
+            $path = "rods://" . $path;
+        $url = parse_url($path);
+
+        $host = isset($url['host']) ? $url['host'] : '';
+        $port = isset($url['port']) ? $url['port'] : '';
+
+        $user = '';
+        $zone = '';
+        $authtype = 'irods';
+        if (isset($url['user'])) {
+            if (strstr($url['user'], ".") !== false) {
+                $user_array = @explode(".", $url['user']);
+                if (count($user_array) === 3) {
+                    $user = $user_array[0];
+                    $zone = $user_array[1];
+                    $authtype = $user_array[2];
+                } else {
+                    $user = $user_array[0];
+                    $zone = $user_array[1];
+                }
+            } else
+                $user = $url['user'];
         }
-        else {
-          $user=$user_array[0];
-          $zone=$user_array[1];
-        }
-      }
-      else
-        $user=$url['user'];
-    }  
-    
-    $pass=isset($url['pass'])?$url['pass']:'';
-    
-    $account=new RODSAccount($host, $port, $user, $pass, $zone, '', $authtype);
-    
-    $path_str=isset($url['path'])?$url['path']:''; 
-    
-    // treat query and fragment as part of name
-    if (isset($url['query'])&&(strlen($url['query'])>0))
-      $path_str=$path_str.'?'.$url['query'];
-    if (isset($url['fragment'])&&(strlen($url['fragment'])>0))
-      $path_str=$path_str.'#'.$url['fragment'];
-    
-    if (empty($path_str))
-      $path_str='/'; 
-      
-    return (new ProdsFile($account,$path_str,$verify));
-  }  
-  
- /**
-	* Verify if this file exist with server. This function shouldn't be called directly, use {@link exists}
-	*/
-  protected function verify()
-  {
-    $conn = RODSConnManager::getConn($this->account);
-    $this->path_exists= $conn->fileExists($this->path_str);
-    RODSConnManager::releaseConn($conn);  
-  }
-  
- /**
-  * get the file stats
-  */
-  public function getStats()
-  {
-    $conn = RODSConnManager::getConn($this->account);
-    $stats=$conn->getFileStats($this->path_str);
-    RODSConnManager::releaseConn($conn); 
-    
-    if ($stats===false) $this->stats=NULL;
-    else $this->stats=$stats;
-    return $this->stats;
-  }
- 
+
+        $pass = isset($url['pass']) ? $url['pass'] : '';
+
+        $account = new RODSAccount($host, $port, $user, $pass, $zone, '', $authtype);
+
+        $path_str = isset($url['path']) ? $url['path'] : '';
+
+        // treat query and fragment as part of name
+        if (isset($url['query']) && (strlen($url['query']) > 0))
+            $path_str = $path_str . '?' . $url['query'];
+        if (isset($url['fragment']) && (strlen($url['fragment']) > 0))
+            $path_str = $path_str . '#' . $url['fragment'];
+
+        if (empty($path_str))
+            $path_str = '/';
+
+        return (new ProdsFile($account, $path_str, $verify));
+    }
+
+    /**
+     * Verify if this file exist with server. This function shouldn't be called directly, use {@link exists}
+     */
+    protected function verify()
+    {
+        $conn = RODSConnManager::getConn($this->account);
+        $this->path_exists = $conn->fileExists($this->path_str);
+        RODSConnManager::releaseConn($conn);
+    }
+
+    /**
+     * get the file stats
+     */
+    public function getStats()
+    {
+        $conn = RODSConnManager::getConn($this->account);
+        $stats = $conn->getFileStats($this->path_str);
+        RODSConnManager::releaseConn($conn);
+
+        if ($stats === false) $this->stats = NULL;
+        else $this->stats = $stats;
+        return $this->stats;
+    }
+
     /**
      * Open a file path (string) exists on RODS server.
      *
@@ -131,10 +136,10 @@ class ProdsFile extends ProdsPath
      * -  'a+'    Open for reading and writing; place the file pointer at the end of the file. If the file does not exist, attempt to create it.
      * -  'x'    Create and open for writing only; place the file pointer at the beginning of the file. If the file already exists, the fopen() call will fail by returning FALSE and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
      * -  'x+'    Create and open for reading and writing; place the file pointer at the beginning of the file. If the file already exists, the fopen() call will fail by returning FALSE and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
-     * @param string $rescname. Note that this parameter is required only if the file does not exists (create mode). If the file already exists, and if file resource is unknown or unique or you-dont-care for that file, leave the field, or pass NULL.
-     * @param boolean $assum_file_exists. This parameter specifies whether file exists. If the value is false, this mothod will check with RODS server to make sure. If value is true, the check will NOT be done. Default value is false.
-     * @param string $filetype. This parameter only make sense when you want to specify the file type, if file does not exists (create mode). If not specified, it defaults to "generic"
-     * @param integer $cmode. This parameter is only used for "createmode". It specifies the file mode on physical storage system (RODS vault), in octal 4 digit format. For instance, 0644 is owner readable/writeable, and nothing else. 0777 is all readable, writable, and excutable. If not specified, and the open flag requirs create mode, it defaults to 0644.
+     * @param string $rescname . Note that this parameter is required only if the file does not exists (create mode). If the file already exists, and if file resource is unknown or unique or you-dont-care for that file, leave the field, or pass NULL.
+     * @param boolean $assum_file_exists . This parameter specifies whether file exists. If the value is false, this mothod will check with RODS server to make sure. If value is true, the check will NOT be done. Default value is false.
+     * @param string $filetype . This parameter only make sense when you want to specify the file type, if file does not exists (create mode). If not specified, it defaults to "generic"
+     * @param integer $cmode . This parameter is only used for "createmode". It specifies the file mode on physical storage system (RODS vault), in octal 4 digit format. For instance, 0644 is owner readable/writeable, and nothing else. 0777 is all readable, writable, and excutable. If not specified, and the open flag requirs create mode, it defaults to 0644.
      */
     public function open($mode, $rescname = NULL,
                          $assum_file_exists = false, $filetype = 'generic', $cmode = 0644)
@@ -147,7 +152,7 @@ class ProdsFile extends ProdsPath
 
         $this->conn = RODSConnManager::getConn($this->account);
         $this->l1desc = $this->conn->openFileDesc($this->path_str, $mode,
-            $this->postion, $rescname, $assum_file_exists, $filetype, $cmode);
+            $this->position, $rescname, $assum_file_exists, $filetype, $cmode);
         $this->openmode = $mode;
         RODSConnManager::releaseConn($this->conn);
     }
@@ -181,6 +186,7 @@ class ProdsFile extends ProdsPath
         $conn->fileUnlink($this->path_str, $rescname, $force);
         RODSConnManager::releaseConn($conn);
     }
+
     /**
      * close the file descriptor (private) made from RODS server earlier.
      */
@@ -204,7 +210,8 @@ class ProdsFile extends ProdsPath
      * reads up to length bytes from the file. Reading stops when up to length bytes have been read, EOF (end of file) is reached
      *
      * @param int $length up to how many bytes to read.
-     * @return the read string.
+     * @return string read string.
+     * @throws RODSException
      */
     public function read($length)
     {
@@ -230,7 +237,8 @@ class ProdsFile extends ProdsPath
      * write up to length bytes to the server. this function is binary safe.
      * @param string $string contents to be written.
      * @param int $length up to how many bytes to write.
-     * @return the number of bytes written.
+     * @return int the number of bytes written.
+     * @throws RODSException
      */
     public function write($string, $length = NULL)
     {
@@ -258,7 +266,11 @@ class ProdsFile extends ProdsPath
      *  SEEK_CUR - Set position to current location plus offset.
      *  SEEK_END - Set position to end-of-file plus offset. (To move to a position before the end-of-file, you need to pass a negative value in offset.)
      *  If whence is not specified, it is assumed to be SEEK_SET.
+     *
+     * @param $offset
+     * @param int $whence
      * @return int the current offset
+     * @throws RODSException
      */
     public function seek($offset, $whence = SEEK_SET)
     {
@@ -390,15 +402,15 @@ class ProdsFile extends ProdsPath
         }
         return $ret_arr;
     }
-    
-        /**
+
+    /**
      * Get ACL (users and their rights on a file)
-     * @param string $filepath input file path string
+     *
      * @return RODSFileStats. If file does not exists, return fales.
      */
     public function getACL()
     {
-
+        $users = [];
         $filepath = $this->path_str;
         $parent = dirname($filepath);
         $filename = basename($filepath);
@@ -410,14 +422,14 @@ class ProdsFile extends ProdsPath
 
         $connLocal = RODSConnManager::getConn($this->account);
         $que_result = $connLocal->genQuery(
-              array("COL_USER_NAME", "COL_USER_ZONE", "COL_DATA_ACCESS_NAME"),
+            array("COL_USER_NAME", "COL_USER_ZONE", "COL_DATA_ACCESS_NAME"),
             $cond, array());
         RODSConnManager::releaseConn($connLocal);
         if ($que_result === false) return false;
 
 
-        for($i=0; $i < sizeof($que_result['COL_USER_NAME']); $i++) {
-            $users[] = (object) array(
+        for ($i = 0; $i < sizeof($que_result['COL_USER_NAME']); $i++) {
+            $users[] = (object)array(
                 "COL_USER_NAME" => $que_result['COL_USER_NAME'][$i],
                 "COL_USER_ZONE" => $que_result['COL_USER_ZONE'][$i],
                 "COL_DATA_ACCESS_NAME" => $que_result['COL_DATA_ACCESS_NAME'][$i]
