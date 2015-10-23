@@ -11,4 +11,3 @@ Through composer.
 * Support composer autoloading
 * Support proxy user (aka switch user)
 * INT_RP reply support
-

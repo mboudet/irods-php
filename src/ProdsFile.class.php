@@ -101,7 +101,7 @@ class ProdsFile extends ProdsPath
   protected function verify()
   {
     $conn = RODSConnManager::getConn($this->account);
-    $this->path_exists= $conn -> fileExists ($this->path_str);
+    $this->path_exists= $conn->fileExists2($this->path_str);
     RODSConnManager::releaseConn($conn);  
   }
   

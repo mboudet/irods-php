@@ -683,12 +683,17 @@ class RODSConn {
     }
 
     /**
-     * Check whether a file (in string) exists on RODS server.
-     * @return true/false
+     * Check whether an object exists on iRODS server and is registered in iCAT under a specfic resource
+     *
+     * @param $filepath
+     * @param null $rescname
+     * @return bool
+     * @throws RODSException
      */
-    public function fileExists($filepath, $rescname = NULL) {
+    public function objExists($filepath, $rescname = NULL) {
         $parent = dirname($filepath);
         $filename = basename($filepath);
+
         if (empty($rescname)) {
             $cond = array(new RODSQueryCondition("COL_COLL_NAME", $parent),
                 new RODSQueryCondition("COL_DATA_NAME", $filename));
@@ -704,6 +709,36 @@ class RODSConn {
             return false;
         else
             return true;
+    }
+
+    /**
+     * Check whether a file exists on iRODS server.
+     *
+     * @param $filePath
+     * @param null $rescName
+     * @return bool
+     * @throws RODSException
+     */
+    public function fileExists($filePath, $rescName = NULL) {
+        $src_pk = new RP_DataObjInp($filePath, 0, 0, 0, 0, 0, 0);
+
+        $msg = new RODSMessage("RODS_API_REQ_T", $src_pk, $GLOBALS['PRODS_API_NUMS']['OBJ_STAT_AN']);
+        fwrite($this->conn, $msg->pack());
+
+        $response = new RODSMessage();
+        $intInfo = (int) $response->unpack($this->conn);
+
+        if ($intInfo < 0) {
+            throw new RODSException("RODSConn::stat has got an error from the server", $GLOBALS['PRODS_ERR_CODES_REV'][$intInfo]);
+        }
+
+        // We are also checking whether the file exists on a specific resource
+        // This requires a genQuery to check whether the object exists.
+        if ( !empty($rescName) ) {
+            return $this->objExists($filePath, $rescName);
+        }
+
+        return (bool) $intInfo;
     }
 
     /**
