@@ -1,6 +1,8 @@
 {
     "name": "maastrichtuniversity/irods-php",
-    "description": "The canonical iRODS PHP API ",
+    "description": "A fork of the DICE-UNC iRODS PHP API ",
+    "keywords": ["irods","php"],
+    "homepage": "https://github.com/MaasrichtUniversity/irods-php",
     "type": "library",
     "license": "BSD",
     "require-dev": {
