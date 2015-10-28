@@ -909,14 +909,22 @@ class RODSConn {
             throw new RODSException("RODSConn::openFileDesc() expect file '$path' dose not exists with mode '$mode', but the file does exists", "PERR_USER_INPUT_ERROR");
         }
 
-        if (($create_if_not_exists) && ($file_exists === false)) { // create new file
-            $keyValPair_pk = new RP_KeyValPair(2, array("rescName", "dataType"), array("$rescname", "$filetype"));
+        if (($create_if_not_exists) && ($file_exists === false)) {
+
+            // Create new file
+            if ( !empty($rescname)) {
+                $keyValPair_pk = new RP_KeyValPair(2, array("rescName", "dataType"), array($rescname, $filetype));
+            } else {
+                $keyValPair_pk = new RP_KeyValPair(1, array("dataType"), array($filetype));
+            }
             $dataObjInp_pk = new RP_DataObjInp($path, $cmode, $open_flag, 0, -1, 0, 0, $keyValPair_pk);
             $api_num = $GLOBALS['PRODS_API_NUMS']['DATA_OBJ_CREATE_AN'];
-        } else { // open existing file
+
+        } else {
+            // open existing file
             // open the file and get descriptor
             if (isset($rescname)) {
-                $keyValPair_pk = new RP_KeyValPair(1, array("rescName"), array("$rescname"));
+                $keyValPair_pk = new RP_KeyValPair(1, array("rescName"), array($rescname));
                 $dataObjInp_pk = new RP_DataObjInp
                         ($path, 0, $open_flag, 0, -1, 0, 0, $keyValPair_pk);
             } else {
@@ -927,17 +935,18 @@ class RODSConn {
         }
 
         $msg = new RODSMessage("RODS_API_REQ_T", $dataObjInp_pk, $api_num);
-        fwrite($this->conn, $msg->pack()); // send it
-        // get value back
-        $msg = new RODSMessage();
-        $intInfo = (int) $msg->unpack($this->conn);
+        fwrite($this->conn, $msg->pack());
+
+        $response = new RODSMessage();
+        $intInfo = (int) $response->unpack($this->conn);
         if ($intInfo < 0) {
             if (RODSException::rodsErrCodeToAbbr($intInfo) == 'CAT_NO_ROWS_FOUND') {
                 throw new RODSException("trying to open a file '$path' " .
                 "which does not exists with mode '$mode' ", "PERR_USER_INPUT_ERROR");
             }
-            throw new RODSException("RODSConn::openFileDesc has got an error from the server", $GLOBALS['PRODS_ERR_CODES_REV']["$intInfo"]);
+            throw new RODSException("RODSConn::openFileDesc has got an error from the server", $GLOBALS['PRODS_ERR_CODES_REV'][$intInfo]);
         }
+
         $l1desc = $intInfo;
 
         if ($seek_to_end_of_file === true) {
