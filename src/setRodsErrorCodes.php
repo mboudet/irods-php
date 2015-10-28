@@ -1,8 +1,6 @@
 <?php
-$RODS_tree_root = dirname(__FILE__) . "/../../..";
-
-$capi_error_table_file = $RODS_tree_root . "/lib/core/include/rodsErrorTable.h";
-$prods_error_table_file = $RODS_tree_root . "/clients/prods/src/RodsErrorTable.inc.php";
+$capi_error_table_file = "rodsErrorTable.h";
+$prods_error_table_file = "RodsErrorTable.inc.php";
 
 // Add more error code here, if you wish. It will be added to the default
 // RODS error code. Note that these errors code are for web server/client
@@ -26,19 +24,14 @@ foreach ($lines as $line) {
     if (strlen($line) < 8) continue;
     if (substr($line, 0, 7) == '#define') {
         $rest = trim(substr($line, 7));
-        $tokens = preg_split("/\s+/", $rest);
-        if (count($tokens) < 2)
+
+        preg_match("/([A-Z_]+)\s+([-0-9]+)/", $rest, $tokens);
+
+        if (count($tokens) != 3)
             continue;
-        $val1 = NULL;
-        $val2 = NULL;
-        foreach ($tokens as $token) {
-            if (strlen($token) > 3) {
-                if (empty($val1)) $val1 = trim($token);
-                else $val2 = trim($token);
-            }
-        }
-        if ((!empty($val1)) && (!empty($val2))) {
-            array_push($value_pairs, array($val1, $val2));
+
+        if ( !empty($tokens[1]) && !empty($tokens[2]) ) {
+            array_push($value_pairs, array($tokens[1], $tokens[2]));
         }
     }
 }
@@ -57,7 +50,7 @@ $outputstr = $outputstr . '$GLOBALS[\'PRODS_ERR_CODES\']=array(' . "\n";
 foreach ($value_pairs as $value_pair) {
     $val1 = $value_pair[0];
     $val2 = $value_pair[1];
-    $outputstr = $outputstr . "  '$val1' => '$val2',\n";
+    $outputstr = $outputstr . "    '$val1' => '$val2',\n";
 }
 $outputstr = $outputstr . ");\n";
 
@@ -65,7 +58,7 @@ $outputstr = $outputstr . '$GLOBALS[\'PRODS_ERR_CODES_REV\']=array(' . "\n";
 foreach ($value_pairs as $value_pair) {
     $val1 = $value_pair[0];
     $val2 = $value_pair[1];
-    $outputstr = $outputstr . "  '$val2' => '$val1',\n";
+    $outputstr = $outputstr . "    '$val2' => '$val1',\n";
 }
 $outputstr = $outputstr . ");\n";
 
