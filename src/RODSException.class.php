@@ -6,12 +6,7 @@
  * @package Prods
  */
 
-$errtable_file = dirname(__FILE__) . "/RodsErrorTable.inc.php";
-
-if (is_readable($errtable_file))
-    require_once($errtable_file);
-else
-    die("Could not read file $errtable_file <br/>\n");
+require_once(dirname(__FILE__) . "/RodsErrorTable.inc.php");
 
 /**
  * custom exception class for RODS
@@ -25,12 +20,14 @@ class RODSException extends Exception
      * Makes a new RODS excption
      * @param string $message err/exception message
      * @param string $code_abbr error code abbreviation
+     * @param Exception $cause
      */
     public function __construct($message, $code_abbr = "UNKNOWN_PRODS_ERR",
                                 Exception $cause = NULL)
     {
         $this->code_abbr = $code_abbr;
         $this->cause = $cause;
+        $message .= " [$code_abbr]";
 
         parent::__construct($message, $GLOBALS['PRODS_ERR_CODES'][$code_abbr]);
     }
@@ -176,7 +173,6 @@ class RODSException extends Exception
     public function __toString()
     {
         return __CLASS__ . ": [{$this->code} $this->code_abbr]: {$this->message}\n";
-        //return $this->showStackTrace();
     }
 
 }
