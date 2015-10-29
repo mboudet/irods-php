@@ -7,6 +7,7 @@
  * @package RODSConn
  */
 require_once("RodsAPINum.inc.php");
+require_once("RodsErrorTable.inc.php");
 require_once("RodsConst.inc.php");
 
 if (!defined("O_RDONLY"))
@@ -728,17 +729,26 @@ class RODSConn {
         $response = new RODSMessage();
         $intInfo = (int) $response->unpack($this->conn);
 
-        if ($intInfo < 0) {
-            throw new RODSException("RODSConn::stat has got an error from the server", $GLOBALS['PRODS_ERR_CODES_REV'][$intInfo]);
+        switch($intInfo) {
+            case 1:
+
+                if ( !empty($rescName) ) {
+                    // We are also checking whether the file exists on a specific resource
+                    // This requires a genQuery to check whether the object exists.
+                    return $this->objExists($filePath, $rescName);
+                }
+
+                return true;
+            break;
+
+            case $GLOBALS['PRODS_ERR_CODES']['USER_FILE_DOES_NOT_EXIST']:
+                return false;
+            break;
+
+            default:
+                throw new RODSException("RODSConn::stat has got an error from the server", $GLOBALS['PRODS_ERR_CODES_REV'][$intInfo]);
         }
 
-        // We are also checking whether the file exists on a specific resource
-        // This requires a genQuery to check whether the object exists.
-        if ( !empty($rescName) ) {
-            return $this->objExists($filePath, $rescName);
-        }
-
-        return (bool) $intInfo;
     }
 
     /**
