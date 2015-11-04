@@ -741,6 +741,8 @@ class RODSConn {
                 return true;
             break;
 
+            // I'm not sure when either of these two cases occurs
+            case 0:
             case $GLOBALS['PRODS_ERR_CODES']['USER_FILE_DOES_NOT_EXIST']:
                 return false;
             break;
