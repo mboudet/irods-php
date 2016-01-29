@@ -487,6 +487,38 @@ class RODSConn {
         }
     }
 
+
+    /**
+     * Returns the contents of a special object.
+     *
+     * Returns both files and collections
+     *
+     * @param $path
+     * @param int $total_num_rows
+     * @return RODSGenQueResults
+     * @throws RODSException
+     */
+    public function getSpecialContent($path, & $total_num_rows = -1) {
+        $src_pk = new RP_DataObjInp($path, 0, 0, 0, 0, 0, 0);
+
+        $msg = new RODSMessage("RODS_API_REQ_T", $src_pk, $GLOBALS['PRODS_API_NUMS']['QUERY_SPEC_COLL_AN']);
+        fwrite($this->conn, $msg->pack());
+
+        $response = new RODSMessage();
+        $intInfo = (int) $response->unpack($this->conn);
+
+        if ( $intInfo !== 0 ) {
+            throw new RODSException("RODSConn::getSpecialContent has got an error from the server", $GLOBALS['PRODS_ERR_CODES_REV'][$intInfo]);
+        }
+
+        $results = new RODSGenQueResults();
+        $result_pk = $response->getBody();
+
+        $results->addResults($result_pk);
+
+        return $results;
+    }
+
     /**
      * Get children direcotories, with basic stats,  of input direcotory path string
      * @param string $dir input direcotory path string

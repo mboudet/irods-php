@@ -569,6 +569,45 @@ class ProdsDir extends ProdsPath
     }
 
     /**
+     * Find children directories of mounted collections (or possibly other special collections)
+     *
+     * Mounted dirs are not present in iCAT, and thus need special handling. Ideally this
+     * would be fixed in findDirs() or even better, at the iRODS server level. Clients should not
+     * need to know about this details.
+     *
+     * @return ProdsDir[]
+     */
+    public function getChildrenMountedDirs(){
+        $conn = RODSConnManager::getConn($this->account);
+        $results = $conn->getSpecialContent($this->path_str);
+        RODSConnManager::releaseConn($conn);
+
+        $result_values = $results->getValues();
+        $found = [];
+        for ($i = 0; $i < $results->getNumRow(); $i++) {
+
+            // Files have COL_DATA_NAME set, directories not
+            if ( $result_values['COL_DATA_NAME'][$i] != '' ) {
+                continue;
+            }
+
+            $full_path = $result_values['COL_COLL_NAME'][$i];
+            $actual_name = basename($result_values['COL_COLL_NAME'][$i]);
+            $stats = new RODSDirStats(
+                $actual_name,
+                null,
+                null,
+                $result_values['COL_D_MODIFY_TIME'][$i],
+                $result_values['COL_D_CREATE_TIME'][$i],
+                null,
+                null);
+            $found[] = new ProdsDir($this->account, $full_path, false, $stats);
+        }
+
+        return $found;
+    }
+
+    /**
      * query metadata, and find matching diretories.
      * @param array $terms an assositive array of search conditions, supported ones are:
      * -    'name' (string) - partial name of the target (file or dir)
