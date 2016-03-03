@@ -127,16 +127,18 @@ class ProdsDir extends ProdsPath
   }
 
 
- /**
-	* Get children files of this dir.
-	*
-	* @param array $orderby An associated array specifying how to sort the result by attributes. See details in method {@link findFiles};
-	* @param int $startingInx starting index of all files. default is 0.
-	* @param int $maxresults max results returned. if negative, it returns all rows. default is -1
-	* @param int &$total_num_rows number of all results
-	* @param boolean $logical_file whether to return only logical files, if false, it returns all replica with resource name, if true, it returns only 1 logical file, with num_replica available in the stats. default is false.
-	* @return an array of ProdsFile
-	*/
+    /**
+     * Get children files of this dir.
+     *
+     * @param array $orderby An associated array specifying how to sort the result by attributes. See details in method {@link findFiles};
+     * @param int $startingInx starting index of all files. default is 0.
+     * @param int $maxresults max results returned. if negative, it returns all rows. default is -1
+     * @param int &$total_num_rows number of all results
+     * @param bool $logicalFile
+     * @return ProdsFile[]
+     * @throws RODSException
+     * @internal param bool $logical_file whether to return only logical files, if false, it returns all replica with resource name, if true, it returns only 1 logical file, with num_replica available in the stats. default is false.
+     */
   public function getChildFiles(array $orderby=array(), $startingInx=0,
     $maxresults=-1, &$total_num_rows=-1, $logicalFile=false)
   {
@@ -169,9 +171,13 @@ class ProdsDir extends ProdsPath
 
     /**
      * Get children directories of this dir.
-     * @param $orderby An associated array specifying how to sort the result by attributes. See details in method {@link findDirs};
+     * @param array $orderby An associated array specifying how to sort the result by attributes. See details in method {@link findDirs}
      * Note that if the current dir is root '/', it will not return '/' as its child, unlike iCommand's current behavior.
-     * @return an array of ProdsDir
+     * @param int $startingInx
+     * @param int $maxresults
+     * @param int $total_num_rows
+     * @return ProdsDir[]
+     * @throws RODSException
      */
     public function getChildDirs(array $orderby = array(), $startingInx = 0,
                                  $maxresults = -1, &$total_num_rows = -1)
