@@ -522,14 +522,18 @@ class RODSConn {
     /**
      * Get children direcotories, with basic stats,  of input direcotory path string
      * @param string $dir input direcotory path string
-     * @param $orderby An associated array specifying how to sort the result by attributes. Each array key is the attribute, array val is 0 (assendent) or 1 (dessendent). The supported attributes are "name", "owner", "mtime".
-     * @return an array of RODSDirStats
+     * @param array $orderby An associated array specifying how to sort the result by attributes. Each array key is the attribute, array val is 0 (assendent) or 1 (dessendent). The supported attributes are "name", "owner", "mtime".
+     * @param int $startingInx
+     * @param int $maxresults
+     * @param int $total_num_rows
+     * @return RODSDirStats[]
+     * @throws RODSException
      */
     public function getChildDirWithStats($dir, $orderby = array(), $startingInx = 0, $maxresults = 500, &$total_num_rows = -1) {
         // set selected value
         $select_val = array("COL_COLL_NAME", "COL_COLL_ID", "COL_COLL_OWNER_NAME",
             "COL_COLL_OWNER_ZONE", "COL_COLL_CREATE_TIME", "COL_COLL_MODIFY_TIME",
-            "COL_COLL_COMMENTS");
+            "COL_COLL_COMMENTS", "COL_COLL_TYPE", "COL_COLL_INFO1", "COL_COLL_INFO2");
         $select_attr = array();
 
         // set order by
@@ -568,7 +572,16 @@ class RODSConn {
             for ($i = 0; $i < count($que_result['COL_COLL_ID']); $i++) {
                 if ($que_result['COL_COLL_NAME'][$i] != "/") {
                     $ret_val[] = new RODSDirStats(
-                            basename($que_result['COL_COLL_NAME'][$i]), $que_result['COL_COLL_OWNER_NAME'][$i], $que_result['COL_COLL_OWNER_ZONE'][$i], $que_result['COL_COLL_MODIFY_TIME'][$i], $que_result['COL_COLL_CREATE_TIME'][$i], $que_result['COL_COLL_ID'][$i], $que_result['COL_COLL_COMMENTS'][$i]
+                        basename($que_result['COL_COLL_NAME'][$i]),
+                        $que_result['COL_COLL_OWNER_NAME'][$i],
+                        $que_result['COL_COLL_OWNER_ZONE'][$i],
+                        $que_result['COL_COLL_MODIFY_TIME'][$i],
+                        $que_result['COL_COLL_CREATE_TIME'][$i],
+                        $que_result['COL_COLL_ID'][$i],
+                        $que_result['COL_COLL_COMMENTS'][$i],
+                        $que_result['COL_COLL_TYPE'][$i],
+                        $que_result['COL_COLL_INFO1'][$i],
+                        $que_result['COL_COLL_INFO2'][$i]
                     );
                 }
             }
@@ -671,7 +684,17 @@ class RODSConn {
             return false;
 
         $stats = new RODSDirStats(
-                basename($que_result['COL_COLL_NAME'][0]), $que_result['COL_COLL_OWNER_NAME'][0], $que_result['COL_COLL_OWNER_ZONE'][0], $que_result['COL_COLL_MODIFY_TIME'][0], $que_result['COL_COLL_CREATE_TIME'][0], $que_result['COL_COLL_ID'][0], $que_result['COL_COLL_COMMENTS'][0]
+            basename($que_result['COL_COLL_NAME'][0]),
+            $que_result['COL_COLL_OWNER_NAME'][0],
+            $que_result['COL_COLL_OWNER_ZONE'][0],
+            $que_result['COL_COLL_MODIFY_TIME'][0],
+            $que_result['COL_COLL_CREATE_TIME'][0],
+            $que_result['COL_COLL_ID'][0],
+            $que_result['COL_COLL_COMMENTS'][0],
+            $que_result['COL_COLL_TYPE'][0],
+            $que_result['COL_COLL_INFO1'][0],
+            $que_result['COL_COLL_INFO2'][0]
+
         );
         return $stats;
     }

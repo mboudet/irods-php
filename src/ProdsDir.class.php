@@ -600,6 +600,9 @@ class ProdsDir extends ProdsPath
                 $result_values['COL_D_MODIFY_TIME'][$i],
                 $result_values['COL_D_CREATE_TIME'][$i],
                 null,
+                null,
+                null,
+                null,
                 null);
             $found[] = new ProdsDir($this->account, $full_path, false, $stats);
         }
@@ -628,6 +631,7 @@ class ProdsDir extends ProdsPath
      * The results are sorted by specified array keys.
      * The possible array value must be boolean: true stands for 'asc' and false stands for 'desc', default is 'asc'
      * @return array of ProdsPath objects (ProdsFile or ProdsDir).
+     * @throws RODSException
      */
     public function findDirs(array $terms, &$total_count, $start = 0, $limit = -1,
                              array $sort_flds = array())
@@ -635,7 +639,8 @@ class ProdsDir extends ProdsPath
         $flds = array("COL_COLL_NAME" => NULL, "COL_COLL_ID" => NULL,
             "COL_COLL_OWNER_NAME" => NULL, 'COL_COLL_OWNER_ZONE' => NULL,
             "COL_COLL_CREATE_TIME" => NULL, "COL_COLL_MODIFY_TIME" => NULL,
-            "COL_COLL_COMMENTS" => NULL);
+            "COL_COLL_COMMENTS" => NULL, "COL_COLL_TYPE" => NULL,
+            "COL_COLL_INFO1" => NULL, "COL_COLL_INFO2" => NULL);
 
         foreach ($sort_flds as $sort_fld_key => $sort_fld_val) {
             switch ($sort_fld_key) {
@@ -758,7 +763,10 @@ class ProdsDir extends ProdsPath
                 $result_values['COL_COLL_MODIFY_TIME'][$i],
                 $result_values['COL_COLL_CREATE_TIME'][$i],
                 $result_values['COL_COLL_ID'][$i],
-                $result_values['COL_COLL_COMMENTS'][$i]);
+                $result_values['COL_COLL_COMMENTS'][$i],
+                $result_values['COL_COLL_TYPE'][$i],
+                $result_values['COL_COLL_INFO1'][$i],
+                $result_values['COL_COLL_INFO2'][$i]);
 
             $found[] = new ProdsDir($this->account, $full_path, false, $stats);
         }
