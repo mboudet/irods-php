@@ -577,7 +577,7 @@ class ProdsDir extends ProdsPath
      *
      * @return ProdsDir[]
      */
-    public function getChildrenMountedDirs(){
+    public function getChildMountedDirs(){
         $conn = RODSConnManager::getConn($this->account);
         $results = $conn->getSpecialContent($this->path_str);
         RODSConnManager::releaseConn($conn);
