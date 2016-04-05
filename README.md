@@ -4,7 +4,11 @@ This is a fork of the official DICE-UNC iRODS PHP api.
 
 ## Installation
 
-Through composer.
+Preferably through [composer](https://getcomposer.org/).
+
+```
+php composer.phar require "MaastrichtUniversity/irods-php"
+```
 
 ## Features and bug fixes compared to DICE-UNC version
 
@@ -12,4 +16,6 @@ Through composer.
 * Cleaned up formatting
 * Support proxy user (aka switch user)
 * INT_RP reply support
-* ProdsFile->exists() support for mounted collections
+* Support for special collections (mounted collections in particular) in different places (not all)
+* Updated codes to iRODS 4.1.5 (should work with later versions too)
+* Misc. fixes
