@@ -143,12 +143,18 @@ class RODSConn {
                 throw new RODSException("Connection to '$host:$port' failed.ssl1. User: $proxy_user Zone: $zone", $GLOBALS['PRODS_ERR_CODES_REV']["$intInfo"]);
             }
             // Turn on SSL on our side
-            if (!stream_socket_enable_crypto($conn, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+            // TSM Feb 2016: changed crypto method from TLS_CLIENT to SSLv23_CLIENT  because iRODS4.1 expects at least TLS1.2
+            //               in PHP 5.4 the TLS_CLIENT will NOT negotiate TLS 1.2 where SSLv23 does so.
+            //               see https://bugs.php.net/bug.php?id=65329
+ 
+            if (!stream_socket_enable_crypto($conn, true, STREAM_CRYPTO_METHOD_SSLv23_CLIENT)) {
                 throw new RODSException("Error turning on SSL on connection to server '$host:$port'.");
             }
 
             // all good ... do the PAM authentication over the encrypted connection
-            $req_packet = new RP_pamAuthRequestInp($proxy_user, $pass, -1);
+            // FIXME: '24', the TTL in hours, should be a configuration option.
+            $req_packet = new RP_pamAuthRequestInp($proxy_user, $pass, 24);
+            
             $msg = new RODSMessage("RODS_API_REQ_T", $req_packet, $GLOBALS['PRODS_API_NUMS']['PAM_AUTH_REQUEST_AN']);
             fwrite($conn, $msg->pack());
             $msg = new RODSMessage();
@@ -174,16 +180,23 @@ class RODSConn {
             // De-activate SSL on the connection
             stream_socket_enable_crypto($conn, false);
 
-            // nasty hack ... some characters are left over to be read
-            // from the socket after the SSL shutdown, and I can't 
-            // figure out how to consume them via SSL routines, so I
-            // just read them and throw them away. They need to be consumed
-            // or later reads get out of sync with the API responses
-            $r = array($conn);
-            $w = $e = null;
-            while (stream_select($r, $w, $e, 0) > 0) {
-                $s = fread($conn, 1);
-            }
+            // CJS: For whatever reason some trash is left over for us
+            // to read after the SSL shutdown.
+            // We need to read and discard those bytes so they don't
+            // get in the way of future API responses.
+            //
+            // There used to be a while(select() > 0){fread(1)} loop
+            // here, but that proved to be unreliable, most likely
+            // because sometimes not all trash bytes have yet been
+            // received at that point. This caused PAM logins to fail
+            // randomly.
+            //
+            // The following fread() call reads all remaining bytes in
+            // the current packet (or so it seems).
+            //
+            // Testing shows there's always exactly 31 bytes to read.
+
+            fread($conn, 1024);
         }
 
         // request authentication
