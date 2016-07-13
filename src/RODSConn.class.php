@@ -234,7 +234,8 @@ class RODSConn {
         $intInfo = $msg->unpack($conn);
         if ($intInfo < 0) {
             $this->disconnect();
-            throw new RODSException("Connection to '$host:$port' failed.4 (login failed, possible wrong user/passwd). User: $proxy_user Pass: $pass Zone: $zone", $GLOBALS['PRODS_ERR_CODES_REV']["$intInfo"]);
+            $scrambledPass = preg_replace("|.|","*",$pass);
+            throw new RODSException("Connection to '$host:$port' failed.4 (login failed, possible wrong user/passwd). User: $proxy_user Pass: $scrambledPass Zone: $zone", $GLOBALS['PRODS_ERR_CODES_REV']["$intInfo"]);
         }
 
         $this->connected = true;
