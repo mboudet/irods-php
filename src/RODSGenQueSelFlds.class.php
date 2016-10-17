@@ -32,7 +32,7 @@ class RODSGenQueSelFlds
             }
             $this->indexes[] = $GLOBALS['PRODS_GENQUE_NUMS']["$name"];
             if (isset($this->attrs, $i)) {
-                $this->attrs[$i] = RODSGenQueSelFlds::attr2GenQueNumber($this->attrs[$i]);
+                $this->attrs[$i] = RODSGenQueSelFlds::attr2GenQueNumber($attrs[$i]);
             } else {
                 $this->attrs[$i] = 1;
             }
