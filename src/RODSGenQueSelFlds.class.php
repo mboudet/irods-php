@@ -5,18 +5,19 @@ class RODSGenQueSelFlds
     private $indexes;
     private $attrs;
 
-    /**
-     * default constructor.
-     * @param string $name name of the field, which must be one defined in file 'RodsGenQueryNum.inc.php'.
-     * @param string $attrs extra options used for operations such as order_by, the expected values are:
-     * - 'order_by_asc' order the result by this field, in ASCENDING order
-     * - 'order_by_desc' order the result by this field, in DESCENDING order
-     * - min minimum of the group
-     * - max maximum of the group
-     * - sum sum of the group
-     * - avg average of the group
-     * - count count of the group
-     */
+  /**
+   * default constructor.
+   * @param array $names name of the field, which must be one defined in file 'RodsGenQueryNum.inc.php'.
+   * @param array|string $attrs extra options used for operations such as order_by, the expected values are:
+   * - 'order_by_asc' order the result by this field, in ASCENDING order
+   * - 'order_by_desc' order the result by this field, in DESCENDING order
+   * - min minimum of the group
+   * - max maximum of the group
+   * - sum sum of the group
+   * - avg average of the group
+   * - count count of the group
+   * @throws \RODSException
+   */
     public function __construct(array $names = array(), array $attrs = array())
     {
         require_once("RodsGenQueryNum.inc.php"); //load magic numbers
@@ -27,10 +28,10 @@ class RODSGenQueSelFlds
 
         for ($i = 0; $i < count($names); $i++) {
             $name = $names[$i];
-            if (!isset($GLOBALS['PRODS_GENQUE_NUMS']["$name"])) {
+            if (!isset($GLOBALS['PRODS_GENQUE_NUMS'][$name])) {
                 throw new RODSException("General Query select field name '$name' is not valid", 'PERR_USER_INPUT_ERROR');
             }
-            $this->indexes[] = $GLOBALS['PRODS_GENQUE_NUMS']["$name"];
+            $this->indexes[] = $GLOBALS['PRODS_GENQUE_NUMS'][$name];
             if (isset($this->attrs, $i)) {
                 $this->attrs[$i] = RODSGenQueSelFlds::attr2GenQueNumber($attrs[$i]);
             } else {
@@ -40,32 +41,37 @@ class RODSGenQueSelFlds
     }
 
 
-    /**
-     * Add a single select field.
-     *
-     * @param string name name of the field, which must be one defined in file 'RodsGenQueryNum.inc.php'.
-     */
+  /**
+   * Add a single select field.
+   *
+   * @param string $name name of the field, which must be one defined in file 'RodsGenQueryNum.inc.php'.
+   * @param array $attr
+   * @throws \RODSException
+   */
     public function add($name, $attr = NULL)
     {
         require_once("RodsGenQueryNum.inc.php"); //load magic numbers
-        if (!isset($GLOBALS['PRODS_GENQUE_NUMS']["$name"])) {
+        if (!isset($GLOBALS['PRODS_GENQUE_NUMS'][$name])) {
             throw new RODSException("General Query select field name '$name' is not valid",
                 'PERR_USER_INPUT_ERROR');
         }
-        $this->indexes[] = $GLOBALS['PRODS_GENQUE_NUMS']["$name"];
+        $this->indexes[] = $GLOBALS['PRODS_GENQUE_NUMS'][$name];
         $this->names[] = $name;
         $this->attrs[] = RODSGenQueSelFlds::attr2GenQueNumber($attr);
     }
 
-    /**
-     * update a single select field's attr/value. Note that if the value already exists,
-     * it will OR the bits. This is used when you want more than one type of operation
-     * for a select field, such as select_max and sort.
-     */
+  /**
+   * update a single select field's attr/value. Note that if the value already exists,
+   * it will OR the bits. This is used when you want more than one type of operation
+   * for a select field, such as select_max and sort.
+   * @param $name
+   * @param $attr
+   * @throws \RODSException
+   */
     public function update($name, $attr)
     {
         require_once("RodsGenQueryNum.inc.php"); //load magic numbers
-        if (!isset($GLOBALS['PRODS_GENQUE_NUMS']["$name"])) {
+        if (!isset($GLOBALS['PRODS_GENQUE_NUMS'][$name])) {
             throw new RODSException("General Query select field name '$name' is not valid",
                 'PERR_USER_INPUT_ERROR');
         }
@@ -97,7 +103,7 @@ class RODSGenQueSelFlds
     public static function attr2GenQueNumber($attr)
     {
         if (empty($attr)) return 1;
-        $retval = 1;
+
         switch ($attr) {
             case 'order_by_asc':
                 $retval = $GLOBALS['PRODS_GENQUE_NUMS']['ORDER_BY'];
