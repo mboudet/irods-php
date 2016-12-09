@@ -330,6 +330,7 @@ class RODSConn {
     /**
      * Get a key for temp password from the server. this key can then be hashed together with real password to generate an temp password.
      * @return string key for temp password
+     * @throws \RODSException
      */
     public function getKeyForTempPassword() {
         if ($this->connected === false) {
@@ -344,6 +345,38 @@ class RODSConn {
             throw new RODSException("RODSConn::getKeyForTempPassword has got an error from the server", $GLOBALS['PRODS_ERR_CODES_REV']["$intInfo"]);
         }
         return ($msg->getBody()->stringToHashWith);
+    }
+
+    /**
+     * Return a temporary password for a specific user
+     *
+     * @param $user
+     * @return string key for temp password
+     * @throws \RODSException
+     */
+    public function getTempPasswordForUser($user) {
+        if ($this->connected === false) {
+            throw new RODSException("getTempPasswordForUser needs an active connection, but the connection is currently inactive", 'PERR_CONN_NOT_ACTIVE');
+        }
+        $user_pk = new RODSPacket("getTempPasswordForOtherInp_PI", ['targetUser' => $user, 'unused' => null]);
+        // API request ID: 724
+        $msg = new RODSMessage("RODS_API_REQ_T", $user_pk, $GLOBALS['PRODS_API_NUMS']['GET_TEMP_PASSWORD_FOR_OTHER_AN']);
+
+        // Send it
+        fwrite($this->conn, $msg->pack());
+
+        // Response
+        $msg = new RODSMessage();
+        $intInfo = (int) $msg->unpack($this->conn);
+        if ($intInfo < 0) {
+          throw new RODSException("RODSConn::getTempPasswordForUser has got an error from the server", $GLOBALS['PRODS_ERR_CODES_REV']["$intInfo"]);
+        }
+        $key = $msg->getBody()->stringToHashWith;
+
+        $auth_str = str_pad($key . $this->account->pass, 100, "\0");
+        $pwmd5 = bin2hex(md5($auth_str, true));
+
+        return $pwmd5;
     }
 
     /**

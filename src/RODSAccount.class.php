@@ -156,6 +156,23 @@ class RODSAccount
     }
 
     /**
+     * Get a temp password for current user
+     * @return string of temp password
+     */
+    public function getTempPasswordForUser($username,
+                                           $get_cb = array('RODSConnManager', 'getConn'),
+                                           $rel_cb = array('RODSConnManager', 'releaseConn'))
+    {
+        //$conn = RODSConnManager::getConn($this);
+        $conn = call_user_func_array($get_cb, array(&$this));
+        //TODO: Overcome fear of passing $this by reference or stop passing $this by reference
+        $tempPass = $conn->getTempPasswordForUser($username);
+        // RODSConnManager::releaseConn($conn);
+        call_user_func($rel_cb, $conn);
+        return $tempPass;
+    }
+
+    /**
      * Get user's home directory
      * @param string init_path, if specified, it will overwrite the default path
      * @return ProdsDir User's home directory
