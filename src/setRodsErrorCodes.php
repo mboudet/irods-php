@@ -14,12 +14,12 @@ $new_error_codes = array(
     array("PERR_USER_INPUT_ERROR", -3104000),
     array("PERR_USER_INPUT_PATH_ERROR", -3105000),
     array("PERR_CONN_NOT_ACTIVE", -3106000),
-    // TODO: Decide if adding CUSTOM ERROR code below is the best solution.
+    // TODO: Decide if adding RULE_CUSTOM_FATAL_ERROR code below is the best solution.
     // This custom error is introduced in order to preserve the '-1' value in the RODSException->code.
     // Without the custom error being stated below, RODSConn.class.php line 1374 errors with an undefined offset and
     // cannot lookup the corresponding codeAttr. As a result, the value of RODSException->code will then be set to '0',
     // while we expect '-1' in subsequent pacman code.
-    array("CUSTOM_ERROR", -1)
+    array("RULE_CUSTOM_FATAL_ERROR", -1)
 );
 
 $value_pairs = array();
