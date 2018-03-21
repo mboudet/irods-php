@@ -580,7 +580,7 @@ class RODSConn {
         // set selected value
         $select_val = array("COL_COLL_NAME", "COL_COLL_ID", "COL_COLL_OWNER_NAME",
             "COL_COLL_OWNER_ZONE", "COL_COLL_CREATE_TIME", "COL_COLL_MODIFY_TIME",
-            "COL_COLL_COMMENTS", "COL_COLL_TYPE", "COL_COLL_INFO1", "COL_COLL_INFO2");
+            "COL_COLL_COMMENTS");
         $select_attr = array();
 
         // set order by
@@ -625,10 +625,7 @@ class RODSConn {
                         $que_result['COL_COLL_MODIFY_TIME'][$i],
                         $que_result['COL_COLL_CREATE_TIME'][$i],
                         $que_result['COL_COLL_ID'][$i],
-                        $que_result['COL_COLL_COMMENTS'][$i],
-                        $que_result['COL_COLL_TYPE'][$i],
-                        $que_result['COL_COLL_INFO1'][$i],
-                        $que_result['COL_COLL_INFO2'][$i]
+                        $que_result['COL_COLL_COMMENTS'][$i]
                     );
                 }
             }
@@ -737,11 +734,7 @@ class RODSConn {
             $que_result['COL_COLL_MODIFY_TIME'][0],
             $que_result['COL_COLL_CREATE_TIME'][0],
             $que_result['COL_COLL_ID'][0],
-            $que_result['COL_COLL_COMMENTS'][0],
-            $que_result['COL_COLL_TYPE'][0],
-            $que_result['COL_COLL_INFO1'][0],
-            $que_result['COL_COLL_INFO2'][0]
-
+            $que_result['COL_COLL_COMMENTS'][0]
         );
         return $stats;
     }
