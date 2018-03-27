@@ -30,7 +30,7 @@ class ProdsStreamer
 	 */
 	private $file;
 
-	
+	public $metadata;
 	/**
 	 * url_stat() handler.
 	 *
@@ -215,6 +215,7 @@ class ProdsStreamer
 	{
 		try {
 		  $this->dir=ProdsDir::fromURI($path,true);
+          $this->metadata = $this->dir->getMeta();
 		  return true;
 		} catch (Exception $e) {
 		  trigger_error("Got an exception:$e", E_USER_WARNING);
@@ -321,6 +322,7 @@ class ProdsStreamer
             $mode = substr($mode, 0, strlen($mode) - 1);
          try {
             $this->file = ProdsFile::fromURI($path);
+            $this->metadata = $this->file->getMeta();
             $this->file->open($mode);
             return true;
         } catch (Exception $e) {
