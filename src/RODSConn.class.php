@@ -580,7 +580,7 @@ class RODSConn {
         // set selected value
         $select_val = array("COL_COLL_NAME", "COL_COLL_ID", "COL_COLL_OWNER_NAME",
             "COL_COLL_OWNER_ZONE", "COL_COLL_CREATE_TIME", "COL_COLL_MODIFY_TIME",
-            "COL_COLL_COMMENTS");
+            "COL_COLL_COMMENTS", "COL_COLL_TYPE", "COL_COLL_INFO1", "COL_COLL_INFO2");
         $select_attr = array();
 
         // set order by
@@ -625,7 +625,10 @@ class RODSConn {
                         $que_result['COL_COLL_MODIFY_TIME'][$i],
                         $que_result['COL_COLL_CREATE_TIME'][$i],
                         $que_result['COL_COLL_ID'][$i],
-                        $que_result['COL_COLL_COMMENTS'][$i]
+                        $que_result['COL_COLL_COMMENTS'][$i],
+                        $que_result['COL_COLL_TYPE'][$i],
+                        $que_result['COL_COLL_INFO1'][$i],
+                        $que_result['COL_COLL_INFO2'][$i]
                     );
                 }
             }
@@ -723,7 +726,7 @@ class RODSConn {
         $que_result = $this->genQuery(
                 array("COL_COLL_NAME", "COL_COLL_ID", "COL_COLL_OWNER_NAME",
             "COL_COLL_OWNER_ZONE", "COL_COLL_CREATE_TIME", "COL_COLL_MODIFY_TIME",
-            "COL_COLL_COMMENTS"), $cond, array(), 0, 1, false);
+            "COL_COLL_TYPE", "COL_COLL_INFO1", "COL_COLL_INFO2","COL_COLL_COMMENTS"), $cond, array(), 0, 1, false);
         if ($que_result === false)
             return false;
 
@@ -734,7 +737,11 @@ class RODSConn {
             $que_result['COL_COLL_MODIFY_TIME'][0],
             $que_result['COL_COLL_CREATE_TIME'][0],
             $que_result['COL_COLL_ID'][0],
-            $que_result['COL_COLL_COMMENTS'][0]
+            $que_result['COL_COLL_COMMENTS'][0],
+            $que_result['COL_COLL_TYPE'][0],
+            $que_result['COL_COLL_INFO1'][0],
+            $que_result['COL_COLL_INFO2'][0]
+
         );
         return $stats;
     }
@@ -1112,7 +1119,7 @@ class RODSConn {
         try {
 
             $openedDataObjInp = new RP_OpenedDataObjInp($l1desc);
-            $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['DATA_OBJ_CLOSE_AN']);
+            $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['OPENED_DATA_OBJ_CLOSE_AN']);
             fwrite($this->conn, $msg->pack()); // send it
             // get value back
             $msg = new RODSMessage();
@@ -1135,7 +1142,7 @@ class RODSConn {
     public function fileRead($l1desc, $length) {
 
         $openedDataObjInp = new RP_OpenedDataObjInp($l1desc, $length);
-        $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['DATA_OBJ_READ_AN']);
+        $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['OPENED_DATA_OBJ_READ_AN']);
 
         fwrite($this->conn, $msg->pack()); // send it
         $msg = new RODSMessage();
@@ -1161,7 +1168,7 @@ class RODSConn {
         //$dataObjWriteInp_pk = new RP_dataObjWriteInp($l1desc, $length);
 
         $openedDataObjInp = new RP_OpenedDataObjInp($l1desc, $length);
-        $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['DATA_OBJ_WRITE_AN'], $string);
+        $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['OPENED_DATA_OBJ_WRITE_AN'], $string);
 
         fwrite($this->conn, $msg->pack()); // send header and body msg
         fwrite($this->conn, $string); // send contents
@@ -1187,7 +1194,7 @@ class RODSConn {
 
 
         $openedDataObjInp = new RP_OpenedDataObjInp($l1desc, 0, $offset, $whence);
-        $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['DATA_OBJ_SEEK_AN']);
+        $msg = new RODSMessage("RODS_API_REQ_T", $openedDataObjInp, $GLOBALS['PRODS_API_NUMS']['OPENED_DATA_OBJ_SEEK_AN']);
 
         fwrite($this->conn, $msg->pack()); // send it
         $msg = new RODSMessage();
